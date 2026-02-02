@@ -118,19 +118,24 @@ function agregarTarea(texto, fechaLimite) {
 
 // editar tarea funcion
 
-function editarTarea(id, nuevoTexto) {
+function editarTarea(id, nuevoTexto, nuevaFecha) {
     tareas = tareas.map(tarea => {
         if (tarea.id === id) {
-            return { ...tarea, texto: nuevoTexto };
+            return {
+                ...tarea,
+                texto: nuevoTexto,
+                fechaLimite: nuevaFecha || null
+            };
         }
         return tarea;
     });
 
-    guardarTareas();      // 💾 guardar cambios
-    renderizarTareas();   // 🔄 actualizar pantalla
+    guardarTareas();
+    renderizarTareas();
 
     console.log('✏️ Tarea editada:', id);
 }
+
 
 
 // ============================================
