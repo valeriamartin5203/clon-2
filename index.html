@@ -10,6 +10,9 @@
     <div class="container">
         <h1>📝 Mi Lista de Tareas</h1>
 
+        <button id="btn-modo" class="btn-modo">🌙 Modo oscuro</button>
+
+
         <!-- Formulario para agregar tareas -->
         <form id="form-tarea">
             <input
@@ -23,7 +26,14 @@
                 id="input-fecha"
                 aria-label="Fecha límite"
             >
+            <select id="input-categoria">
+                <option value="general">📌 General</option>
+                <option value="estudio">📚 Estudio</option>
+                <option value="trabajo">💼 Trabajo</option>
+                <option value="personal">🏠 Personal</option>
+            </select>
             <button type="submit">Agregar</button>
+
         </form>
 
         <!-- Filtros -->
@@ -42,6 +52,20 @@
         <p class="contador">
             <span id="contador-pendientes">0</span> tareas pendientes
         </p>
+
+        <select id="input-categoria">
+            <option value="general">General</option>
+            <option value="estudio">Estudio</option>
+            <option value="trabajo">Trabajo</option>
+            <option value="personal">Personal</option>
+        </select>
+
+        <button class="filtro" data-filtro="estudio">Estudio</button>
+        <button class="filtro" data-filtro="trabajo">Trabajo</button>
+        <button class="filtro" data-filtro="personal">Personal</button>
+
+        
+
     </div>
 
     <script src="script.js"></script>

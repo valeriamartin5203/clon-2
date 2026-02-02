@@ -17,6 +17,7 @@ const listaTareas = document.getElementById('lista-tareas');
 const contadorPendientes = document.getElementById('contador-pendientes');
 const botonesFiltro = document.querySelectorAll('.filtro');
 const inputFecha = document.getElementById('input-fecha');
+const inputCategoria = document.getElementById('input-categoria');
 
 //funcion para saber si una tarea esta por vencer
 function estaPorVencer(fechaLimite) {
@@ -94,14 +95,15 @@ function formatearFechaLocal(fechaISO) {
 }
 
 
-function agregarTarea(texto, fechaLimite) {
+function agregarTarea(texto, fechaLimite, categoria) {
     // Creamos un objeto con la información de la tarea
     const nuevaTarea = {
         id: Date.now(),        // ID único basado en la fecha/hora actual
         texto: texto,          // El texto que escribió el usuario
         completada: false,
         creada: new Date().toISOString(),   // Fecha de creación en formato ISO
-        fechaLimite: fechaLimite || null                     // Fecha límite
+        fechaLimite: fechaLimite || null,                  // Fecha límite
+        categoria: categoria || 'general'
     };
 
     // Agregamos la tarea al inicio del array (para que aparezca arriba)
@@ -188,20 +190,17 @@ function eliminarTarea(id) {
 // PASO 8: Filtrar tareas
 // ============================================
 // Devuelve las tareas según el filtro seleccionado
-
 function filtrarTareas() {
-    switch (filtroActual) {
-        case 'pendientes':
-            // Solo las que NO están completadas
-            return tareas.filter(tarea => !tarea.completada);
-        case 'completadas':
-            // Solo las que SÍ están completadas
-            return tareas.filter(tarea => tarea.completada);
-        default:
-            // Todas las tareas
-            return tareas;
-    }
+    return tareas.filter(tarea => {
+        if (filtroActual === 'todas') return true;
+        if (filtroActual === 'pendientes') return !tarea.completada;
+        if (filtroActual === 'completadas') return tarea.completada;
+
+        // 👇 filtro por categoría
+        return tarea.categoria === filtroActual;
+    });
 }
+
 
 // ============================================
 // PASO 9: Renderizar tareas
@@ -220,6 +219,8 @@ function renderizarTareas() {
                     ? '¡No hay tareas! Agrega una nueva.'
                     : `No hay tareas ${filtroActual}.`}
             </li>
+        
+
         `;
         actualizarContador();
         return;
@@ -261,6 +262,8 @@ function renderizarTareas() {
                 aria-label="Marcar como ${tarea.completada ? 'pendiente' : 'completada'}"
             >
             <span class="tarea-texto">${escaparHTML(tarea.texto)}</span>
+            <span class="tarea-categoria">[${escaparHTML(tarea.categoria)}]</span>
+            ${vencida ? '<span class="badge-vencida">❌ Vencida</span>' : ''}
             ${porVencer ? '<span class="badge-vencer">⚠️ Por vencer</span>' : ''}
 
             <div class="tarea-fechas">
@@ -339,13 +342,16 @@ formulario.addEventListener('submit', (e) => {
     // Obtenemos el texto y quitamos espacios extras
     const texto = inputTarea.value.trim();
     const fechaLimite = inputFecha.value;
+    const categoria = inputCategoria.value;
 
     // Si hay texto, agregamos la tarea
     if (texto) {
-        agregarTarea(texto, fechaLimite);
+        agregarTarea(texto, fechaLimite, categoria);
         inputTarea.value = '';  // Limpiamos el input
         inputTarea.focus();     // Devolvemos el foco al input
         inputFecha.value = '';  // Limpiamos el input de fecha
+        inputCategoria.value = 'general';  // Limpiamos el input de categoría
+    
     }
 
 });
@@ -378,3 +384,24 @@ cargarTareas();
 
 console.log('🚀 ¡Aplicación de tareas lista!');
 console.log('💡 Tip: Abre la consola del navegador (F12) para ver los logs');
+
+const btnModo = document.getElementById('btn-modo');
+
+// Cargar modo guardado
+if (localStorage.getItem('modo') === 'oscuro') {
+    document.body.classList.add('oscuro');
+    btnModo.textContent = ' Modo claro';
+}
+
+btnModo.addEventListener('click', () => {
+    document.body.classList.toggle('oscuro');
+
+    const modoOscuroActivo = document.body.classList.contains('oscuro');
+
+    btnModo.textContent = modoOscuroActivo
+        ? ' Modo claro'
+        : 'Modo oscuro';
+
+    localStorage.setItem('modo', modoOscuroActivo ? 'oscuro' : 'claro');
+});
+

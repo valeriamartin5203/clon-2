@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-    max-width: 500px;
+    max-width: 800px;
     margin: 0 auto;
     background: white;
     border-radius: 16px;
@@ -239,4 +239,81 @@ h1 {
     font-size: 12px;
     margin-left: 8px;
 }
+
+.categoria {
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+.categoria-estudio { background: #dbeafe; color: #1e40af; }
+.categoria-trabajo { background: #dcfce7; color: #166534; }
+.categoria-personal { background: #fce7f3; color: #9d174d; }
+
+/* Botón modo */
+.btn-modo {
+    background: #e0e0e0;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+/* ===== MODO OSCURO ===== */
+body.oscuro {
+    background: linear-gradient(135deg, #1f2933, #111827);
+}
+
+body.oscuro .container {
+    background: #1f2933;
+    color: #e5e7eb;
+}
+
+body.oscuro h1 {
+    color: #f9fafb;
+}
+
+body.oscuro .tarea {
+    background: #374151;
+}
+
+body.oscuro .tarea-texto {
+    color: #f9fafb;
+}
+
+body.oscuro input,
+body.oscuro button {
+    background: #374151;
+    color: #f9fafb;
+}
+
+body.oscuro .filtro {
+    background: #4b5563;
+    color: #f9fafb;
+}
+
+/* ===== CATEGORÍAS EN MODO OSCURO ===== */
+
+body.oscuro .categoria {
+    color: #f9fafb;
+}
+
+body.oscuro .categoria-general {
+    background: #6b7280;
+}
+
+body.oscuro .categoria-estudio {
+    background: #1e3a8a;
+}
+
+body.oscuro .categoria-trabajo {
+    background: #065f46;
+}
+
+body.oscuro .categoria-personal {
+    background: #831843;
+}
+
 
