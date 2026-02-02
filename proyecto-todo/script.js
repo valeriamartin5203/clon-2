@@ -16,6 +16,24 @@ const inputTarea = document.getElementById('input-tarea');
 const listaTareas = document.getElementById('lista-tareas');
 const contadorPendientes = document.getElementById('contador-pendientes');
 const botonesFiltro = document.querySelectorAll('.filtro');
+const inputFecha = document.getElementById('input-fecha');
+
+//funcion para saber si una tarea esta por vencer
+function estaPorVencer(fechaLimite) {
+    if (!fechaLimite) return false;
+
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+
+    const limite = new Date(
+        ...fechaLimite.split('-').map((v, i) => i === 1 ? v - 1 : v)
+    );
+    limite.setHours(0,0,0,0);
+
+    const diferenciaDias = (limite - hoy) / (1000 * 60 * 60 * 24);
+
+    return diferenciaDias === 0 || diferenciaDias === 1;
+}
 
 // ============================================
 // PASO 2: Estado de la aplicación
@@ -68,17 +86,26 @@ function guardarTareas() {
 // ============================================
 // Función que se ejecuta cuando el usuario
 // quiere agregar una nueva tarea
+function formatearFechaLocal(fechaISO) {
+    if (!fechaISO) return 'Sin fecha';
 
-function agregarTarea(texto) {
+    const [year, month, day] = fechaISO.split('-');
+    return new Date(year, month - 1, day).toLocaleDateString();
+}
+
+
+function agregarTarea(texto, fechaLimite) {
     // Creamos un objeto con la información de la tarea
     const nuevaTarea = {
         id: Date.now(),        // ID único basado en la fecha/hora actual
         texto: texto,          // El texto que escribió el usuario
-        completada: false      // Inicialmente no está completada
+        completada: false,
+        creada: new Date().toISOString(),   // Fecha de creación en formato ISO
+        fechaLimite: fechaLimite || null                     // Fecha límite
     };
 
     // Agregamos la tarea al inicio del array (para que aparezca arriba)
-    tareas.unshift(nuevaTarea);
+    tareas.push(nuevaTarea);
 
     // Guardamos en localStorage
     guardarTareas();
@@ -101,7 +128,7 @@ function editarTarea(id, nuevoTexto) {
 
     guardarTareas();      // 💾 guardar cambios
     renderizarTareas();   // 🔄 actualizar pantalla
-    
+
     console.log('✏️ Tarea editada:', id);
 }
 
@@ -199,6 +226,28 @@ function renderizarTareas() {
         const li = document.createElement('li');
         li.className = `tarea ${tarea.completada ? 'completada' : ''}`;
         li.dataset.id = tarea.id;
+        const porVencer = estaPorVencer(tarea.fechaLimite) && !tarea.completada;
+
+    if (porVencer) 
+    {
+        li.classList.add('por-vencer');
+    }
+
+
+        const fechaCreacion = new Date(tarea.creada).toLocaleDateString();
+        const fechaLimite = formatearFechaLocal(tarea.fechaLimite);
+
+
+        // ⏰ vencida
+        const hoy = new Date().setHours(0,0,0,0);
+        const vencida = tarea.fechaLimite &&
+            new Date(tarea.fechaLimite).setHours(0,0,0,0) < hoy &&
+            !tarea.completada;
+
+        if (vencida) {
+            li.classList.add('vencida');
+        }
+
 
         li.innerHTML = `
             <input
@@ -207,6 +256,10 @@ function renderizarTareas() {
                 aria-label="Marcar como ${tarea.completada ? 'pendiente' : 'completada'}"
             >
             <span class="tarea-texto">${escaparHTML(tarea.texto)}</span>
+            <div class="tarea-fechas">
+                <small class="fecha-creacion">🗓️ Creada: ${fechaCreacion}</small>
+                <small class="fecha-limite">⏰ Límite: ${fechaLimite}</small>
+            </div>
             <button class="btn-editar" aria-label="Editar tarea">✏️</button>
             <button class="btn-eliminar" aria-label="Eliminar tarea">🗑️</button>
         `;
@@ -216,8 +269,21 @@ function renderizarTareas() {
         checkbox.addEventListener('change', () => toggleTarea(tarea.id));
 
         //editar tarea
-        const btnEditar = li.querySelector('.btn-editar');
-        btnEditar.addEventListener('click', () => editarTarea(tarea.id, prompt('Editar tarea:', tarea.texto)));
+        li.querySelector('.btn-editar').addEventListener('click', () => {
+            const nuevoTexto = prompt('Editar tarea:', tarea.texto);
+            if (!nuevoTexto || !nuevoTexto.trim()) return;
+
+            const nuevaFecha = prompt(
+                'Editar fecha límite (YYYY-MM-DD):',
+                tarea.fechaLimite || ''
+            );
+
+            editarTarea(
+                tarea.id,
+                nuevoTexto.trim(),
+                nuevaFecha ? nuevaFecha.trim() : null
+            );
+        });
 
         //eliminar tarea
         const btnEliminar = li.querySelector('.btn-eliminar');
@@ -265,13 +331,16 @@ formulario.addEventListener('submit', (e) => {
 
     // Obtenemos el texto y quitamos espacios extras
     const texto = inputTarea.value.trim();
+    const fechaLimite = inputFecha.value;
 
     // Si hay texto, agregamos la tarea
     if (texto) {
-        agregarTarea(texto);
+        agregarTarea(texto, fechaLimite);
         inputTarea.value = '';  // Limpiamos el input
         inputTarea.focus();     // Devolvemos el foco al input
+        inputFecha.value = '';  // Limpiamos el input de fecha
     }
+
 });
 
 // Eventos para los botones de filtro

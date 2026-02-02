@@ -218,3 +218,12 @@ h1 {
     100% { transform: translateX(0); }
 }
 
+.vencida {
+    background: #ffe5e5;
+    border-left: 4px solid red;
+}
+
+.fechas {
+    font-size: 12px;
+    color: #666;
+}
