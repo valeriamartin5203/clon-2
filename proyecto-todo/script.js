@@ -228,10 +228,10 @@ function renderizarTareas() {
         li.dataset.id = tarea.id;
         const porVencer = estaPorVencer(tarea.fechaLimite) && !tarea.completada;
 
-    if (porVencer) 
-    {
-        li.classList.add('por-vencer');
-    }
+        if (porVencer) 
+        {
+            li.classList.add('por-vencer');
+        }
 
 
         const fechaCreacion = new Date(tarea.creada).toLocaleDateString();
@@ -256,6 +256,8 @@ function renderizarTareas() {
                 aria-label="Marcar como ${tarea.completada ? 'pendiente' : 'completada'}"
             >
             <span class="tarea-texto">${escaparHTML(tarea.texto)}</span>
+            ${porVencer ? '<span class="badge-vencer">⚠️ Por vencer</span>' : ''}
+
             <div class="tarea-fechas">
                 <small class="fecha-creacion">🗓️ Creada: ${fechaCreacion}</small>
                 <small class="fecha-limite">⏰ Límite: ${fechaLimite}</small>
