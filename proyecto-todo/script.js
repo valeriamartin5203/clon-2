@@ -89,6 +89,20 @@ function agregarTarea(texto) {
     console.log('➕ Nueva tarea agregada:', texto);
 }
 
+function editarTarea(id, nuevoTexto) {
+    tareas = tareas.map(tarea => {
+        if (tarea.id === id) {
+            return { ...tarea, texto: nuevoTexto };
+        }
+        return tarea;
+    });
+
+    guardarTareas();      // 💾 guardar cambios
+    renderizarTareas();   // 🔄 actualizar pantalla
+
+    console.log('✏️ Tarea editada:', id);
+}
+
 // ============================================
 // PASO 6: Cambiar estado de tarea
 // ============================================
@@ -117,16 +131,23 @@ function toggleTarea(id) {
 // ============================================
 // Cuando el usuario hace clic en el botón de eliminar
 
+
 function eliminarTarea(id) {
-    // Usamos filter para crear un nuevo array
-    // SIN la tarea que queremos eliminar
-    tareas = tareas.filter(tarea => tarea.id !== id);
+    const li = document.querySelector(`li[data-id="${id}"]`);
+    if (!li) return;
 
-    guardarTareas();
-    renderizarTareas();
+    // 1️⃣ Agitar
+    li.classList.add('shake');
 
-    console.log('🗑️ Tarea eliminada:', id);
+    // 2️⃣ Esperar animación
+    setTimeout(() => {
+        tareas = tareas.filter(tarea => tarea.id !== id);
+        guardarTareas();
+        renderizarTareas();
+        console.log('🗑️ Tarea eliminada:', id);
+    }, 400);
 }
+
 
 // ============================================
 // PASO 8: Filtrar tareas
@@ -154,13 +175,9 @@ function filtrarTareas() {
 // Esta función actualiza la lista visual de tareas
 
 function renderizarTareas() {
-    // Obtenemos las tareas según el filtro activo
     const tareasFiltradas = filtrarTareas();
-
-    // Limpiamos la lista actual
     listaTareas.innerHTML = '';
 
-    // Si no hay tareas, mostramos un mensaje
     if (tareasFiltradas.length === 0) {
         listaTareas.innerHTML = `
             <li class="sin-tareas">
@@ -175,13 +192,12 @@ function renderizarTareas() {
 
     // Creamos el HTML para cada tarea
     tareasFiltradas.forEach(tarea => {
-        // Creamos el elemento li (list item)
+       // Creamos el elemento li
         const li = document.createElement('li');
-
-        // Agregamos las clases CSS
         li.className = `tarea ${tarea.completada ? 'completada' : ''}`;
+        li.dataset.id = tarea.id;
 
-        // Agregamos el contenido HTML usando template literals
+        // Agregamos el contenido HTML
         li.innerHTML = `
             <input
                 type="checkbox"
@@ -192,21 +208,20 @@ function renderizarTareas() {
             <button class="btn-eliminar" aria-label="Eliminar tarea">🗑️</button>
         `;
 
-        // Agregamos el evento al checkbox
+       // Agregamos eventos al checkbox y botón eliminar
         const checkbox = li.querySelector('input[type="checkbox"]');
         checkbox.addEventListener('change', () => toggleTarea(tarea.id));
 
-        // Agregamos el evento al botón eliminar
+        
         const btnEliminar = li.querySelector('.btn-eliminar');
         btnEliminar.addEventListener('click', () => eliminarTarea(tarea.id));
 
-        // Agregamos el li a la lista
         listaTareas.appendChild(li);
     });
 
-    // Actualizamos el contador
     actualizarContador();
 }
+
 
 // ============================================
 // PASO 10: Actualizar contador
