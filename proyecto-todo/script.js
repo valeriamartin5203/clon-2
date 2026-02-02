@@ -89,6 +89,8 @@ function agregarTarea(texto) {
     console.log('➕ Nueva tarea agregada:', texto);
 }
 
+// editar tarea funcion
+
 function editarTarea(id, nuevoTexto) {
     tareas = tareas.map(tarea => {
         if (tarea.id === id) {
@@ -99,9 +101,10 @@ function editarTarea(id, nuevoTexto) {
 
     guardarTareas();      // 💾 guardar cambios
     renderizarTareas();   // 🔄 actualizar pantalla
-
+    
     console.log('✏️ Tarea editada:', id);
 }
+
 
 // ============================================
 // PASO 6: Cambiar estado de tarea
@@ -192,12 +195,11 @@ function renderizarTareas() {
 
     // Creamos el HTML para cada tarea
     tareasFiltradas.forEach(tarea => {
-       // Creamos el elemento li
+
         const li = document.createElement('li');
         li.className = `tarea ${tarea.completada ? 'completada' : ''}`;
         li.dataset.id = tarea.id;
 
-        // Agregamos el contenido HTML
         li.innerHTML = `
             <input
                 type="checkbox"
@@ -205,6 +207,7 @@ function renderizarTareas() {
                 aria-label="Marcar como ${tarea.completada ? 'pendiente' : 'completada'}"
             >
             <span class="tarea-texto">${escaparHTML(tarea.texto)}</span>
+            <button class="btn-editar" aria-label="Editar tarea">✏️</button>
             <button class="btn-eliminar" aria-label="Eliminar tarea">🗑️</button>
         `;
 
@@ -212,9 +215,14 @@ function renderizarTareas() {
         const checkbox = li.querySelector('input[type="checkbox"]');
         checkbox.addEventListener('change', () => toggleTarea(tarea.id));
 
-        
+        //editar tarea
+        const btnEditar = li.querySelector('.btn-editar');
+        btnEditar.addEventListener('click', () => editarTarea(tarea.id, prompt('Editar tarea:', tarea.texto)));
+
+        //eliminar tarea
         const btnEliminar = li.querySelector('.btn-eliminar');
         btnEliminar.addEventListener('click', () => eliminarTarea(tarea.id));
+
 
         listaTareas.appendChild(li);
     });

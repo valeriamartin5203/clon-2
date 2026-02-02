@@ -154,6 +154,26 @@ h1 {
     color: #c82333;
 }
 
+.btn-editar {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tarea:hover .btn-editar {
+    opacity: 1;
+}
+
+.btn-editar:hover {
+    color: #c82333;
+}
+
+
+
 /* Contador */
 .contador {
     text-align: center;
