@@ -306,18 +306,22 @@ body.oscuro .categoria {
 
 body.oscuro .categoria-general {
     background: #6b7280;
+    color: #f9fafb;
 }
 
 body.oscuro .categoria-estudio {
     background: #1e3a8a;
+    color: #f9fafb;
 }
 
 body.oscuro .categoria-trabajo {
     background: #065f46;
+    color: #f9fafb;
 }
 
 body.oscuro .categoria-personal {
     background: #831843;
+    color: #f9fafb;
 }
 
 @media (max-width: 576px) {
@@ -328,6 +332,7 @@ body.oscuro .categoria-personal {
 
 .list-group-item {
     border-radius: 14px;
+    color: #f9fafb;
 }
 
 .tarea.completada .tarea-texto {
