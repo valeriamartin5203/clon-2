@@ -10,6 +10,8 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     padding: 40px 20px;
+    max-width: 480px;
+    margin: auto;
 
 }
 
@@ -322,5 +324,15 @@ body.oscuro .categoria-personal {
         font-size: 1.5rem;
     }
 }
+
+.list-group-item {
+    border-radius: 14px;
+}
+
+.tarea.completada .tarea-texto {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
 
 

@@ -229,50 +229,65 @@ function renderizarTareas() {
     // Creamos el HTML para cada tarea
     tareasFiltradas.forEach(tarea => {
 
-        const li = document.createElement('li');
-        li.className = `tarea ${tarea.completada ? 'completada' : ''}`;
+       const li = document.createElement('li');
+        li.className = `list-group-item tarea mb-3 shadow-sm ${tarea.completada ? 'completada' : ''}`;
         li.dataset.id = tarea.id;
+
         const porVencer = estaPorVencer(tarea.fechaLimite) && !tarea.completada;
 
-        if (porVencer) 
-        {
-            li.classList.add('por-vencer');
-        }
-
+        if (porVencer) li.classList.add('por-vencer');
 
         const fechaCreacion = new Date(tarea.creada).toLocaleDateString();
         const fechaLimite = formatearFechaLocal(tarea.fechaLimite);
 
 
-        // ⏰ vencida
         const hoy = new Date().setHours(0,0,0,0);
         const vencida = tarea.fechaLimite &&
-            new Date(tarea.fechaLimite).setHours(0,0,0,0) < hoy &&
-            !tarea.completada;
+        new Date(tarea.fechaLimite).setHours(0,0,0,0) < hoy &&
+        !tarea.completada;
 
-        if (vencida) {
-            li.classList.add('vencida');
-        }
-
+        if (vencida) li.classList.add('vencida');
 
         li.innerHTML = `
-            <input
-                type="checkbox"
-                ${tarea.completada ? 'checked' : ''}
-                aria-label="Marcar como ${tarea.completada ? 'pendiente' : 'completada'}"
-            >
-            <span class="tarea-texto">${escaparHTML(tarea.texto)}</span>
-            <span class="tarea-categoria">[${escaparHTML(tarea.categoria)}]</span>
-            ${vencida ? '<span class="badge-vencida">❌ Vencida</span>' : ''}
-            ${porVencer ? '<span class="badge-vencer">⚠️ Por vencer</span>' : ''}
+        <div class="d-flex gap-3 align-items-start">
 
-            <div class="tarea-fechas">
-                <small class="fecha-creacion">🗓️ Creada: ${fechaCreacion}</small>
-                <small class="fecha-limite">⏰ Límite: ${fechaLimite}</small>
+            <input type="checkbox"
+                class="form-check-input mt-1"
+                ${tarea.completada ? 'checked' : ''}>
+
+            <div class="flex-grow-1">
+
+                <div class="fw-semibold tarea-texto">
+                    ${escaparHTML(tarea.texto)}
+                </div>
+
+                <div class="small text-muted tarea-categoria">
+                    📂 ${escaparHTML(tarea.categoria)}
+                </div>
+
+                <div class="mt-1">
+                    ${vencida ? '<span class="badge bg-danger me-1">❌ Vencida</span>' : ''}
+                    ${porVencer ? '<span class="badge bg-warning text-dark">⚠️ Por vencer</span>' : ''}
+                </div>
+
+                <div class="small text-muted mt-2 tarea-fechas">
+                    🗓️ Creada: ${fechaCreacion}<br>
+                    ⏰ Límite: ${fechaLimite}
+                </div>
             </div>
-            <button class="btn-editar" aria-label="Editar tarea">✏️</button>
-            <button class="btn-eliminar" aria-label="Eliminar tarea">🗑️</button>
-        `;
+
+            <div class="d-flex flex-column gap-2">
+                <button class="btn btn-sm btn-outline-secondary btn-editar" aria-label="Editar tarea">
+                    ✏️
+                </button>
+                <button class="btn btn-sm btn-outline-danger btn-eliminar" aria-label="Eliminar tarea">
+                    🗑️
+                </button>
+            </div>
+
+        </div>
+        `;  
+
 
        // Agregamos eventos al checkbox y botón eliminar
         const checkbox = li.querySelector('input[type="checkbox"]');
@@ -404,4 +419,14 @@ btnModo.addEventListener('click', () => {
 
     localStorage.setItem('modo', modoOscuroActivo ? 'oscuro' : 'claro');
 });
+
+const filtroMovil = document.getElementById('filtro-movil');
+
+if (filtroMovil) {
+    filtroMovil.addEventListener('change', () => {
+        filtroActual = filtroMovil.value;
+        renderizarTareas();
+        console.log('📱 Filtro móvil:', filtroActual);
+    });
+}
 
