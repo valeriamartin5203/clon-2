@@ -10,6 +10,7 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     padding: 40px 20px;
+
 }
 
 .container {
@@ -314,6 +315,12 @@ body.oscuro .categoria-trabajo {
 
 body.oscuro .categoria-personal {
     background: #831843;
+}
+
+@media (max-width: 576px) {
+    h1 {
+        font-size: 1.5rem;
+    }
 }
 
 
